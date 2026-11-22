@@ -1,0 +1,6 @@
+@KryptonApi_EFCore_HostAddress = http://localhost:5057
+
+GET {{KryptonApi_EFCore_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
