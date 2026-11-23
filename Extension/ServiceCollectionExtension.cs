@@ -8,6 +8,8 @@ using KryptonApi_EFCore.Validators.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace KryptonApi_EFCore.Extension;
@@ -27,8 +29,24 @@ public static class ServiceCollectionExtension
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
         {
+            var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>()!;
 
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtSettings.Issuer,
+
+                ValidateAudience = true,
+                ValidAudience = jwtSettings.Audience,
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
+
+                ValidateLifetime = true,
+            };
         });
+        services.AddAuthorization();
+
         services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
         services.AddScoped(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
         services.AddScoped<ITokenService, TokenService>();
