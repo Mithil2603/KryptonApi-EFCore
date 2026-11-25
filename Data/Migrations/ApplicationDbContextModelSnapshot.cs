@@ -62,7 +62,9 @@ namespace KryptonApi_EFCore.Data.Migrations
 
                     b.Property<string>("TrackingType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Reps");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");

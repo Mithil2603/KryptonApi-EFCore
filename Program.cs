@@ -1,3 +1,5 @@
+using KryptonApi_EFCore.Data;
+using KryptonApi_EFCore.Data.Seed;
 using KryptonApi_EFCore.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    DbSeeder.SeedExercises(dbContext);
+}
 
 app.UseExceptionHandler();
 
