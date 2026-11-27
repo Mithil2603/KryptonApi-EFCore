@@ -33,4 +33,38 @@ public static class DbSeeder
 
         context.SaveChanges();
     }
+
+    public static void SeedWorkouts(ApplicationDbContext context)
+    {
+        if (context.Workouts.Any())
+        {
+            return;
+        }
+
+        var now = DateTime.UtcNow;
+
+        var exercisesByName = context.Exercises.ToDictionary(e => e.Name);
+
+        var workout = new WorkoutDataModel
+        {
+            Name = "Full Body Beginner",
+            OwnerUserId = null,
+            Location = "Home",
+            EstimatedMinutes = 25,
+            CreatedAt = now
+        };
+
+        context.Workouts.Add(workout);
+        context.SaveChanges();
+
+        context.WorkoutExercises.AddRange(
+            new WorkoutExerciseDataModel { WorkoutId = workout.Id, ExerciseId = exercisesByName["Jumping Jacks"].Id, OrderIndex = 1, Sets = 3, DurationSeconds = 30, RestSeconds = 15, CreatedAt = now },
+            new WorkoutExerciseDataModel { WorkoutId = workout.Id, ExerciseId = exercisesByName["Push-up"].Id, OrderIndex = 2, Sets = 3, Reps = 10, RestSeconds = 60, CreatedAt = now },
+            new WorkoutExerciseDataModel { WorkoutId = workout.Id, ExerciseId = exercisesByName["Bodyweight Squat"].Id, OrderIndex = 3, Sets = 3, Reps = 12, RestSeconds = 60, CreatedAt = now },
+            new WorkoutExerciseDataModel { WorkoutId = workout.Id, ExerciseId = exercisesByName["Plank"].Id, OrderIndex = 4, Sets = 3, DurationSeconds = 30, RestSeconds = 45, CreatedAt = now },
+            new WorkoutExerciseDataModel { WorkoutId = workout.Id, ExerciseId = exercisesByName["Pull-up"].Id, OrderIndex = 5, Sets = 3, Reps = 5, RestSeconds = 90, CreatedAt = now }
+        );
+
+        context.SaveChanges();
+    }
 }
