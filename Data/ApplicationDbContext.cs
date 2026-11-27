@@ -20,6 +20,10 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<WorkoutExerciseDataModel> WorkoutExercises => Set<WorkoutExerciseDataModel>();
 
+    public DbSet<WorkoutSessionDataModel> WorkoutSessions => Set<WorkoutSessionDataModel>();
+
+    public DbSet<SetLogDataModel> SetLogs => Set<SetLogDataModel>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

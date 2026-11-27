@@ -79,6 +79,47 @@ namespace KryptonApi_EFCore.Data.Migrations
                     b.ToTable("Exercises", (string)null);
                 });
 
+            modelBuilder.Entity("KryptonApi_EFCore.Models.SetLogDataModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("DurationSeconds")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ExerciseId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LoggedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Reps")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SessionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SetNumber")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("WeightKg")
+                        .HasColumnType("decimal(6,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExerciseId");
+
+                    b.HasIndex("SessionId");
+
+                    b.ToTable("SetLogs", (string)null);
+                });
+
             modelBuilder.Entity("KryptonApi_EFCore.Models.UserDataModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -221,6 +262,80 @@ namespace KryptonApi_EFCore.Data.Migrations
                     b.ToTable("WorkoutExercises", (string)null);
                 });
 
+            modelBuilder.Entity("KryptonApi_EFCore.Models.WorkoutSessionDataModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<int>("DurationSeconds")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ProgramDayId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalReps")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalSets")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalVolumeKg")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("WorkoutId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WorkoutId");
+
+                    b.ToTable("WorkoutSessions", (string)null);
+                });
+
+            modelBuilder.Entity("KryptonApi_EFCore.Models.SetLogDataModel", b =>
+                {
+                    b.HasOne("KryptonApi_EFCore.Models.ExerciseDataModel", null)
+                        .WithMany()
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KryptonApi_EFCore.Models.WorkoutSessionDataModel", null)
+                        .WithMany()
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("KryptonApi_EFCore.Models.WorkoutDataModel", b =>
                 {
                     b.HasOne("KryptonApi_EFCore.Models.UserDataModel", null)
@@ -246,6 +361,21 @@ namespace KryptonApi_EFCore.Data.Migrations
                         .WithMany()
                         .HasForeignKey("WorkoutId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("KryptonApi_EFCore.Models.WorkoutSessionDataModel", b =>
+                {
+                    b.HasOne("KryptonApi_EFCore.Models.UserDataModel", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KryptonApi_EFCore.Models.WorkoutDataModel", null)
+                        .WithMany()
+                        .HasForeignKey("WorkoutId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618
